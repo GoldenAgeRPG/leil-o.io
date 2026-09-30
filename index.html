@@ -13,7 +13,6 @@
       --accent-hover: #ff3377;
       --text-main: #e1e1e6;
       --text-muted: #a0a0b0;
-      --gold: #ffcc00;
     }
 
     * {
@@ -33,7 +32,7 @@
 
     .auction-tool-container {
       width: 100%;
-      max-width: 750px;
+      max-width: 600px;
       background: var(--card-bg);
       border: 1px solid var(--border-color);
       border-radius: 8px;
@@ -60,41 +59,8 @@
       font-size: 0.85rem;
       letter-spacing: 1px;
       margin-top: 5px;
-    }
-
-    .nav-tabs {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .tab-btn {
-      flex: 1;
-      padding: 12px;
-      background: #181820;
-      border: 1px solid var(--border-color);
-      color: var(--text-muted);
-      font-weight: bold;
-      cursor: pointer;
-      border-radius: 4px;
       text-transform: uppercase;
-      font-size: 0.85rem;
-      transition: all 0.3s;
-    }
-
-    .tab-btn.active {
-      background: var(--accent-pink);
-      color: #fff;
-      border-color: var(--accent-pink);
-      box-shadow: 0 0 10px rgba(255, 0, 85, 0.4);
-    }
-
-    .tab-content {
-      display: none;
-    }
-
-    .tab-content.active {
-      display: block;
+      font-weight: bold;
     }
 
     .form-group {
@@ -111,7 +77,7 @@
       font-weight: 600;
     }
 
-    input, select, textarea {
+    input {
       width: 100%;
       padding: 12px;
       background: #08080a;
@@ -123,7 +89,7 @@
       transition: border-color 0.3s;
     }
 
-    input:focus, select:focus, textarea:focus {
+    input:focus {
       border-color: var(--accent-pink);
     }
 
@@ -174,12 +140,17 @@
     }
 
     textarea.code-result {
-      height: 110px;
+      width: 100%;
+      height: 120px;
       font-family: monospace;
       font-size: 0.85rem;
       color: #7dd3fc;
+      background: #08080a;
+      border: 1px solid var(--border-color);
+      padding: 10px;
       resize: none;
       margin-bottom: 10px;
+      border-radius: 4px;
     }
 
     .btn-copy {
@@ -197,144 +168,58 @@
     .btn-copy:hover {
       background: #333345;
     }
-
-    .dice-result {
-      background: #08080a;
-      border: 1px solid var(--border-color);
-      border-left: 4px solid var(--gold);
-      padding: 15px;
-      border-radius: 4px;
-      margin-top: 20px;
-    }
-
-    .dice-result p {
-      margin-bottom: 8px;
-      font-size: 0.95rem;
-    }
-
-    .highlight {
-      color: var(--accent-pink);
-      font-weight: bold;
-    }
-
-    .highlight-gold {
-      color: var(--gold);
-      font-weight: bold;
-    }
   </style>
 </head>
 <body>
 
 <div class="auction-tool-container">
   <div class="tool-header">
-    <h2>O Leilão — Central de Lances</h2>
-    <p>Gerador de Postagem & Calculadora de Concorrência NPC</p>
+    <h2>O Leilão</h2>
+    <p>Formulário de Lances</p>
   </div>
 
-  <div class="nav-tabs">
-    <button class="tab-btn active" onclick="switchTab('player-tab', this)">1. Gerar Lance (Jogador)</button>
-    <button class="tab-btn" onclick="switchTab('npc-tab', this)">2. Disputa NPC (Ganância)</button>
-  </div>
-
-  <!-- ABA 1: FORMULÁRIO DO JOGADOR -->
-  <div id="player-tab" class="tab-content active">
-    <div class="row">
-      <div class="col form-group">
-        <label>Tipo de Item</label>
-        <select id="p-type" onchange="updateMinBid()">
-          <option value="comum">Item Comum (Mín: ¥ 50.000)</option>
-          <option value="destaque">Item Destaque (Mín: ¥ 1.000.000)</option>
-        </select>
-      </div>
-      <div class="col form-group">
-        <label>Nome / Nº do Item</label>
-        <input type="text" id="p-item" placeholder="Ex: Item #02 - Relíquia Obscura">
-      </div>
+  <div class="row">
+    <div class="col form-group">
+      <label>Nome do Personagem</label>
+      <input type="text" id="p-name" placeholder="Ex: Hiroto">
     </div>
-
-    <div class="row">
-      <div class="col form-group">
-        <label>Valor do Lance (Ienes)</label>
-        <input type="number" id="p-bid" placeholder="50000" min="50000">
-      </div>
-      <div class="col form-group">
-        <label>Origem dos Recursos</label>
-        <select id="p-source">
-          <option value="Saldo Próprio">Saldo Próprio</option>
-          <option value="Linha de Crédito da Aranha">Linha de Crédito da Aranha</option>
-          <option value="Misto (Saldo + Crédito)">Misto (Saldo + Crédito)</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label>Link do Banco / Comprovação</label>
-      <input type="url" id="p-link" placeholder="https://goldenagereps.forumeiros.com/t123-banco...">
-    </div>
-
-    <button class="btn-submit" onclick="generateBidBBCode()">Gerar Template de Lance</button>
-
-    <div class="output-box" id="player-output" style="display:none;">
-      <h4>Código para Postagem no Fórum:</h4>
-      <textarea id="p-code" class="code-result" readonly></textarea>
-      <button class="btn-copy" onclick="copyCode()">📋 Copiar BBCode</button>
+    <div class="col form-group">
+      <label>Item Desejado</label>
+      <input type="text" id="p-item" placeholder="Ex: Item #02">
     </div>
   </div>
 
-  <!-- ABA 2: SIMULADOR DE NPC (GANÂNCIA E VALOR) -->
-  <div id="npc-tab" class="tab-content">
-    <div class="row">
-      <div class="col form-group">
-        <label>Raridade do Item</label>
-        <select id="npc-rarity">
-          <option value="comum">Comum (CD 10)</option>
-          <option value="destaque">Destaque (CD 5)</option>
-        </select>
-      </div>
-      <div class="col form-group">
-        <label>Lances Já Feitos por NPCs (Máx: 10)</label>
-        <input type="number" id="npc-count" value="0" min="0" max="10">
-      </div>
+  <div class="row">
+    <div class="col form-group">
+      <label>Valor do Lance (Ienes)</label>
+      <input type="number" id="p-bid" placeholder="Ex: 500000">
     </div>
-
-    <div class="form-group">
-      <label>Último Lance Registrado (¥)</label>
-      <input type="number" id="npc-last-bid" placeholder="Ex: 150000">
+    <div class="col form-group">
+      <label>Link do Banco / Ficha</label>
+      <input type="url" id="p-link" placeholder="URL do tópico">
     </div>
+  </div>
 
-    <button class="btn-submit" onclick="rollNPCAction()">Calcular Reação dos NPCs</button>
+  <button class="btn-submit" onclick="generateBidBBCode()">Gerar Código de Lance</button>
 
-    <div id="npc-output" class="dice-result" style="display:none;"></div>
+  <div class="output-box" id="player-output" style="display:none;">
+    <h4>Código para o Fórum:</h4>
+    <textarea id="p-code" class="code-result" readonly></textarea>
+    <button class="btn-copy" onclick="copyCode()">📋 Copiar BBCode</button>
   </div>
 </div>
 
 <script>
-  function switchTab(tabId, btn) {
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active');
-    btn.classList.add('active');
-  }
-
-  function updateMinBid() {
-    const type = document.getElementById('p-type').value;
-    const bidInput = document.getElementById('p-bid');
-    if (type === 'comum') {
-      bidInput.min = 50000;
-      if (!bidInput.value || Number(bidInput.value) < 50000) bidInput.value = 50000;
-    } else {
-      bidInput.min = 1000000;
-      if (!bidInput.value || Number(bidInput.value) < 1000000) bidInput.value = 1000000;
-    }
-  }
-
   function generateBidBBCode() {
+    const name = document.getElementById('p-name').value.trim() || 'Personagem';
     const item = document.getElementById('p-item').value.trim() || 'Item em Leilão';
     const bid = Number(document.getElementById('p-bid').value || 0).toLocaleString('pt-BR');
-    const source = document.getElementById('p-source').value;
     const link = document.getElementById('p-link').value.trim() || '#';
 
-    const bbcode = `[b]Item Desejado:[/b] ${item}\n[b]Valor do Lance:[/b] ¥ ${bid}\n[b]Origem dos Recurso:[/b] ${source}\n[b]Link do Banco/Ficha:[/b] ${link}`;
+    const bbcode = `[b]Personagem:[/b] ${name}
+[b]Item Desejado:[/b] ${item}
+[b]Valor do Lance:[/b] ¥ ${bid}
+[b]Link do Banco/Ficha:[/b] ${link}`;
 
     document.getElementById('p-code').value = bbcode;
     document.getElementById('player-output').style.display = 'block';
@@ -344,54 +229,8 @@
     const codeArea = document.getElementById('p-code');
     codeArea.select();
     document.execCommand('copy');
-    alert('Template de lance copiado!');
+    alert('Código copiado!');
   }
-
-  function rollNPCAction() {
-    const rarity = document.getElementById('npc-rarity').value;
-    const count = parseInt(document.getElementById('npc-count').value) || 0;
-    const lastBid = parseFloat(document.getElementById('npc-last-bid').value) || 0;
-    const output = document.getElementById('npc-output');
-
-    if (count >= 10) {
-      output.innerHTML = `<p class="highlight">⚠️ Limite Alcancado:</p><p>Os NPCs já realizaram 10 lances neste item e encerraram as disputas.</p>`;
-      output.style.display = 'block';
-      return;
-    }
-
-    if (lastBid <= 0) {
-      alert('Informe o valor do último lance antes de rolar.');
-      return;
-    }
-
-    const cd = rarity === 'comum' ? 10 : 5;
-    const d20 = Math.floor(Math.random() * 20) + 1;
-    const success = d20 >= cd;
-
-    let html = `<p><b>Dado de Ganância (1d20):</b> Rolou <span class="highlight-gold">${d20}</span> (CD: ${cd})</p>`;
-
-    if (success) {
-      const d4 = Math.floor(Math.random() * 4) + 1;
-      const percentages = { 1: 0.10, 2: 0.20, 3: 0.30, 4: 0.50 };
-      const percentText = { 1: '10%', 2: '20%', 3: '30%', 4: '50%' };
-      
-      const increase = lastBid * percentages[d4];
-      const newBid = lastBid + increase;
-
-      html += `<p class="highlight">⚡ UM NPC COBRIU O LANCE!</p>`;
-      html += `<p><b>Dado de Valor (1d4):</b> Rolou <span class="highlight-gold">${d4}</span> (+${percentText[d4]})</p>`;
-      html += `<p><b>Aumento Aplicado:</b> +¥ ${increase.toLocaleString('pt-BR')}</p>`;
-      html += `<p><b>Novo Lance do NPC:</b> <span class="highlight-gold">¥ ${newBid.toLocaleString('pt-BR')}</span></p>`;
-      html += `<p style="font-size: 0.8rem; color: #a0a0b0; margin-top: 10px;">Lances efetuados por NPCs neste item: ${count + 1}/10</p>`;
-    } else {
-      html += `<p style="color: #ff4444; margin-top: 5px;">❌ Nenhum NPC cobriu a oferta. O lance atual do jogador se mantém na liderança.</p>`;
-    }
-
-    output.innerHTML = html;
-    output.style.display = 'block';
-  }
-
-  updateMinBid();
 </script>
 
 </body>
