@@ -141,7 +141,7 @@
 
     textarea.code-result {
       width: 100%;
-      height: 220px;
+      height: 120px;
       font-family: monospace;
       font-size: 0.85rem;
       color: #7dd3fc;
@@ -151,6 +151,7 @@
       resize: none;
       margin-bottom: 10px;
       border-radius: 4px;
+      word-break: break-all;
     }
 
     .btn-copy {
@@ -216,21 +217,8 @@
     const bid = Number(document.getElementById('p-bid').value || 0).toLocaleString('pt-BR');
     const link = document.getElementById('p-link').value.trim() || '#';
 
-    // Gera o HTML no formato de ticket bancário (usando a classe .transfer para ficar azul neutro, ou pode ser alterado para .withdrawal)
-    const forumCode = `<link href="https://gaaaaaaaaabs.github.io/goldenagerepositor.io/transacao.css" rel="stylesheet" type="text/css">
-<div class="tx-container transfer">
-  <div class="tx-header">
-    <div class="tx-icon">🔨</div>
-    <h2 class="tx-title">Novo Lance</h2>
-  </div>
-  <div class="tx-body">
-    <div class="tx-amount">${bid}</div>
-    <ul class="tx-details">
-      <li><span class="label">De:</span><span class="value"><a href="${link}" target="_blank">${name}</a></span></li>
-      <li><span class="label">Item:</span><span class="value">${item}</span></li>
-    </ul>
-  </div>
-</div><br>`;
+    // String gerada em linha única sem quebras
+    const forumCode = `<link href="https://gaaaaaaaaabs.github.io/goldenagerepositor.io/transacao.css" rel="stylesheet" type="text/css"><div class="tx-container transfer"><div class="tx-header"><div class="tx-icon">🔨</div><h2 class="tx-title">Novo Lance</h2></div><div class="tx-body"><div class="tx-amount">${bid}</div><ul class="tx-details"><li><span class="label">De:</span><span class="value"><a href="${link}" target="_blank">${name}</a></span></li><li><span class="label">Item:</span><span class="value">${item}</span></li></ul></div></div><br>`;
 
     document.getElementById('p-code').value = forumCode;
     document.getElementById('player-output').style.display = 'block';
