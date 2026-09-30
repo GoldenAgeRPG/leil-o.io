@@ -1,1112 +1,398 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Leilão</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Lato:wght@400;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
-
+  <title>Ferramenta de Lances - O Leilão</title>
   <style>
     :root {
-      --bg: #0a0a0a; --panel: #141414; --border: #333;
-      --gold: #d4af37; --gold-dim: #8a701e; --text: #e0e0e0;
-      --input-bg: #080808; --success: #2ecc71; --danger: #e74c3c; --info: #3498db; --warning: #f1c40f;
+      --bg-dark: #0a0a0c;
+      --card-bg: #121216;
+      --border-color: #2a2a35;
+      --accent-pink: #ff0055;
+      --accent-hover: #ff3377;
+      --text-main: #e1e1e6;
+      --text-muted: #a0a0b0;
+      --gold: #ffcc00;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    /* --- BARRA DE ROLAGEM GLOBAL (PERSONALIZADA) --- */
-    ::-webkit-scrollbar { width: 10px; height: 10px; }
-    ::-webkit-scrollbar-track { background: #050505; }
-    ::-webkit-scrollbar-thumb { 
-        background: var(--gold-dim); 
-        border-radius: 5px; 
-        border: 2px solid #050505; 
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
-    * { scrollbar-width: thin; scrollbar-color: var(--gold-dim) #050505; }
 
     body {
-      background-color: var(--bg); color: var(--text); font-family: 'Lato', sans-serif;
-      min-height: 100vh; 
-      min-height: 100dvh;
-      overflow-y: auto;
-      display: grid; grid-template-columns: 450px 1fr;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      padding: 20px;
+      display: flex;
+      justify-content: center;
     }
 
-    /* --- ESQUERDA: EDITOR --- */
-    .editor-pane {
-      background: var(--panel); border-right: 1px solid var(--gold-dim);
-      display: flex; flex-direction: column; z-index: 10; box-shadow: 5px 0 20px rgba(0,0,0,0.5);
-      height: 100vh; 
-      position: sticky; top: 0; 
+    .auction-tool-container {
+      width: 100%;
+      max-width: 750px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 25px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
     }
 
-    .header {
-      padding: 20px; background: linear-gradient(180deg, #1f1f1f, var(--panel));
-      border-bottom: 2px solid var(--gold); text-align: center; flex-shrink: 0;
-      position: relative;
+    .tool-header {
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 15px;
+      margin-bottom: 25px;
+      text-align: center;
     }
-    .header h1 { font-family: 'Cinzel', serif; color: var(--gold); font-size: 1.5em; margin: 0; }
-    .header p { font-size: 0.7em; color: #666; margin-top: 5px; text-transform: uppercase; letter-spacing: 2px; }
-    
-    .reset-btn {
-        position: absolute; top: 10px; right: 10px; font-size: 0.7em; 
-        background: #333; color: #aaa; border: none; padding: 5px; cursor: pointer; border-radius: 4px;
+
+    .tool-header h2 {
+      color: #fff;
+      font-size: 1.8rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
     }
-    .reset-btn:hover { background: var(--danger); color: #fff; }
 
-    .tabs { display: flex; background: #000; border-bottom: 1px solid var(--border); flex-shrink: 0; }
-    .tab {
-      flex: 1; padding: 12px 5px; text-align: center; cursor: pointer; font-family: 'Cinzel', serif;
-      color: #666; border-bottom: 3px solid transparent; transition: 0.3s; font-size: 0.75em;
+    .tool-header p {
+      color: var(--accent-pink);
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      margin-top: 5px;
     }
-    .tab:hover { background: #111; color: #aaa; }
-    .tab.active { color: var(--gold); border-bottom-color: var(--gold); background: #1a1a1a; }
 
-    .scroll-area { padding: 20px; overflow-y: auto; flex: 1; }
+    .nav-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
 
-    /* Inputs */
-    .form-group { margin-bottom: 15px; }
-    label { display: block; font-size: 0.75em; color: var(--gold); text-transform: uppercase; margin-bottom: 5px; }
-    
+    .tab-btn {
+      flex: 1;
+      padding: 12px;
+      background: #181820;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 4px;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      transition: all 0.3s;
+    }
+
+    .tab-btn.active {
+      background: var(--accent-pink);
+      color: #fff;
+      border-color: var(--accent-pink);
+      box-shadow: 0 0 10px rgba(255, 0, 85, 0.4);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
     input, select, textarea {
-      width: 100%; background: var(--input-bg); border: 1px solid var(--border);
-      color: #fff; padding: 10px; font-family: 'Roboto Mono', monospace; font-size: 0.9em;
-      border-radius: 4px; transition: 0.2s;
-    }
-    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--gold); background: #111; }
-    
-    /* Input Group */
-    .input-group-fixed { display: flex; align-items: center; border: 1px solid var(--border); background: var(--input-bg); border-radius: 4px; }
-    .fixed-label { padding: 10px; color: var(--gold-dim); font-family: 'Roboto Mono'; font-size: 0.9em; border-right: 1px solid #333; background: #111; }
-    .input-group-fixed input { border: none; }
-
-    .row { display: flex; gap: 10px; }
-    .col { flex: 1; }
-
-    /* Botões */
-    .btn {
-      width: 100%; padding: 10px; border: none; cursor: pointer; border-radius: 4px;
-      font-family: 'Cinzel', serif; font-weight: 700; text-transform: uppercase;
-      background: var(--gold-dim); color: #fff; transition: 0.2s; margin-top: 5px; font-size: 0.8em;
-    }
-    .btn:hover { background: var(--gold); color: #000; }
-    .btn-outline { background: transparent; border: 1px solid var(--gold-dim); color: var(--gold-dim); }
-    .btn-outline:hover { background: var(--gold-dim); color: #fff; }
-    
-    .btn-auto { background: linear-gradient(45deg, #2c3e50, #34495e); border: 1px solid #4a6278; color: #fff; }
-    .btn-auto:hover { background: #34495e; border-color: var(--info); }
-    
-    .btn-add { background: #1a1a1a; border: 1px solid #333; color: #aaa; margin-top: 0; }
-    .btn-add:hover { background: #222; color: #fff; border-color: var(--success); }
-
-    /* Lista de Logs */
-    .log-manager-list {
-      display: flex; flex-direction: column; gap: 8px; margin-top: 10px;
-      padding-right: 5px;
-    }
-    .log-item-edit {
-      background: #111; border: 1px solid #333; padding: 10px; border-radius: 4px;
-      display: flex; justify-content: space-between; align-items: center; font-size: 0.8em;
-      cursor: grab; transition: transform 0.2s, background 0.2s;
-    }
-    .log-item-edit:active { cursor: grabbing; }
-    .log-item-edit.dragging {
-        opacity: 0.5;
-        border: 2px dashed var(--gold);
-        background: #000;
+      width: 100%;
+      padding: 12px;
+      background: #08080a;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.3s;
     }
 
-    .log-item-edit.deposit, .log-item-edit.bid { border-left: 3px solid var(--success); }
-    .log-item-edit.withdrawal, .log-item-edit.pass { border-left: 3px solid var(--danger); }
-    .log-item-edit.transfer { border-left: 3px solid var(--info); }
-    
-    .log-left-group { display: flex; align-items: center; gap: 10px; overflow: hidden; }
-    .drag-handle { color: #444; cursor: grab; font-size: 1.2em; flex-shrink: 0; }
-    .drag-handle:hover { color: var(--gold); }
-
-    .log-info span { display: block; max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .log-date { color: #666; font-size: 0.85em; }
-    
-    .btn-del { 
-      color: #e74c3c; cursor: pointer; padding: 8px; border-radius: 4px; transition: 0.2s;
-      background: rgba(231, 76, 60, 0.1); flex-shrink: 0;
-    }
-    .btn-del:hover { background: var(--danger); color: #fff; }
-
-    /* Import & Auto Pay Box */
-    .import-box { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 6px; border: 1px dashed #444; margin-bottom: 20px; }
-    .auto-pay-box { background: rgba(52, 152, 219, 0.05); padding: 15px; border-radius: 6px; border: 1px solid #2c3e50; margin-bottom: 20px; }
-    
-    .checkbox-wrapper { display: flex; align-items: center; gap: 10px; margin-top: 10px; font-size: 0.8em; color: #aaa; cursor: pointer; }
-    .checkbox-wrapper input { width: auto; margin: 0; }
-    
-    .receipt-list-container {
-        border-top: 1px solid #333; margin-top: 20px; padding-top: 10px;
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent-pink);
     }
 
-    /* --- DIREITA: PREVIEW --- */
-    .preview-pane {
-      background-color: #050505;
-      background-image: radial-gradient(circle, #151515 1px, transparent 1px);
-      background-size: 20px 20px;
-      padding: 40px;
-      overflow-y: auto; 
-      display: flex; flex-direction: column; align-items: center; gap: 20px;
+    .row {
+      display: flex;
+      gap: 15px;
     }
-    
-    .output-controls { width: 100%; max-width: 800px; display: flex; gap: 10px; }
-    .output-code { width: 100%; height: 100px; resize: none; }
 
-    .hidden { display: none !important; }
+    .col {
+      flex: 1;
+    }
 
-    /* --- CUSTOM POPUPS (UI) --- */
-    #toast-container {
-        position: fixed; bottom: 20px; right: 20px; z-index: 9999;
-        display: flex; flex-direction: column; gap: 10px; pointer-events: none;
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--accent-pink), #990033);
+      border: 1px solid var(--accent-hover);
+      color: #fff;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: all 0.3s;
+      margin-top: 10px;
     }
-    .toast {
-        background: #1a1a1a; border: 1px solid #333; padding: 12px 18px; border-radius: 4px;
-        color: #fff; box-shadow: 0 5px 20px rgba(0,0,0,0.6); min-width: 250px;
-        display: flex; align-items: center; gap: 10px; font-size: 0.9em;
-        animation: slideIn 0.3s ease forwards; pointer-events: auto;
-    }
-    .toast.success { border-left: 4px solid var(--success); }
-    .toast.error { border-left: 4px solid var(--danger); }
-    .toast.info { border-left: 4px solid var(--info); }
-    .toast.warning { border-left: 4px solid var(--warning); }
-    .toast i { font-size: 1.2em; }
-    
-    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-    @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
 
-    /* Modal Overlay */
-    .modal-overlay {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.8); z-index: 10000;
-        display: flex; align-items: center; justify-content: center;
-        backdrop-filter: blur(3px); animation: fadeIn 0.2s ease;
+    .btn-submit:hover {
+      box-shadow: 0 0 15px rgba(255, 0, 85, 0.6);
+      transform: translateY(-1px);
     }
-    .modal-box {
-        background: #141414; border: 1px solid var(--gold-dim); padding: 25px;
-        width: 90%; max-width: 400px; border-radius: 6px; box-shadow: 0 10px 40px rgba(0,0,0,0.9);
-        text-align: center;
-    }
-    .modal-title { font-family: 'Cinzel'; color: var(--gold); font-size: 1.3em; margin-bottom: 10px; }
-    .modal-msg { color: #ccc; font-size: 0.9em; margin-bottom: 25px; font-family: 'Lato'; line-height: 1.5; }
-    .modal-actions { display: flex; gap: 15px; justify-content: center; }
-    .btn-modal { 
-        padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; 
-        font-family: 'Roboto Mono'; font-weight: bold; text-transform: uppercase; font-size: 0.85em; transition:0.2s;
-    }
-    .btn-confirm { background: var(--danger); color: #fff; }
-    .btn-confirm:hover { background: #c0392b; }
-    .btn-cancel { background: transparent; border: 1px solid #444; color: #888; }
-    .btn-cancel:hover { border-color: #fff; color: #fff; }
-    
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    /* Mobile */
-    @media (max-width: 900px) {
-      body { grid-template-columns: 1fr; overflow: auto; height: auto; display: block; }
-      .editor-pane { 
-        min-height: auto; 
-        height: auto; 
-        position: relative; 
-        border-right: none; 
-        border-bottom: 2px solid var(--gold);
-      }
-      .scroll-area { overflow: visible; height: auto; }
-      .preview-pane { min-height: 100vh; padding: 20px; overflow: visible; }
+    .output-box {
+      margin-top: 25px;
+      background: #08080a;
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--accent-pink);
+      padding: 15px;
+      border-radius: 4px;
+    }
+
+    .output-box h4 {
+      color: #fff;
+      margin-bottom: 10px;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+    }
+
+    textarea.code-result {
+      height: 110px;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: #7dd3fc;
+      resize: none;
+      margin-bottom: 10px;
+    }
+
+    .btn-copy {
+      background: #22222e;
+      border: 1px solid var(--border-color);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    .btn-copy:hover {
+      background: #333345;
+    }
+
+    .dice-result {
+      background: #08080a;
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--gold);
+      padding: 15px;
+      border-radius: 4px;
+      margin-top: 20px;
+    }
+
+    .dice-result p {
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    .highlight {
+      color: var(--accent-pink);
+      font-weight: bold;
+    }
+
+    .highlight-gold {
+      color: var(--gold);
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
 
-  <div id="toast-container"></div>
+<div class="auction-tool-container">
+  <div class="tool-header">
+    <h2>O Leilão — Central de Lances</h2>
+    <p>Gerador de Postagem & Calculadora de Concorrência NPC</p>
+  </div>
 
-  <div class="editor-pane">
-    <div class="header">
-      <h1>IGB Manager</h1>
-      <p>International Golden Bank</p>
-      <button class="reset-btn" onclick="askClearData()" title="Resetar Tudo">Reset Total</button>
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('player-tab', this)">1. Gerar Lance (Jogador)</button>
+    <button class="tab-btn" onclick="switchTab('npc-tab', this)">2. Disputa NPC (Ganância)</button>
+  </div>
+
+  <!-- ABA 1: FORMULÁRIO DO JOGADOR -->
+  <div id="player-tab" class="tab-content active">
+    <div class="row">
+      <div class="col form-group">
+        <label>Tipo de Item</label>
+        <select id="p-type" onchange="updateMinBid()">
+          <option value="comum">Item Comum (Mín: ¥ 50.000)</option>
+          <option value="destaque">Item Destaque (Mín: ¥ 1.000.000)</option>
+        </select>
+      </div>
+      <div class="col form-group">
+        <label>Nome / Nº do Item</label>
+        <input type="text" id="p-item" placeholder="Ex: Item #02 - Relíquia Obscura">
+      </div>
     </div>
-    
-    <div class="tabs">
-      <div class="tab active" onclick="setTab('account')">Conta Principal</div>
-      <div class="tab" onclick="setTab('receipt')">Multi-Recibos</div>
-      <div class="tab" onclick="setTab('auction')">Leilão</div>
+
+    <div class="row">
+      <div class="col form-group">
+        <label>Valor do Lance (Ienes)</label>
+        <input type="number" id="p-bid" placeholder="50000" min="50000">
+      </div>
+      <div class="col form-group">
+        <label>Origem dos Recursos</label>
+        <select id="p-source">
+          <option value="Saldo Próprio">Saldo Próprio</option>
+          <option value="Linha de Crédito da Aranha">Linha de Crédito da Aranha</option>
+          <option value="Misto (Saldo + Crédito)">Misto (Saldo + Crédito)</option>
+        </select>
+      </div>
     </div>
 
-    <div class="scroll-area">
-      
-      <!-- TAB CONTA PRINCIPAL -->
-      <div id="tab-account">
-        <div class="import-box">
-          <label style="color:#fff;">Importar / Exportar (Backup)</label>
-          <textarea id="import-html" placeholder="Cole o código do banco aqui para restaurar backup..." style="height:60px;"></textarea>
-          <button class="btn btn-outline" onclick="importData()">Carregar Banco</button>
-        </div>
+    <div class="form-group">
+      <label>Link do Banco / Comprovação</label>
+      <input type="url" id="p-link" placeholder="https://goldenagereps.forumeiros.com/t123-banco...">
+    </div>
 
-        <div class="form-group">
-            <label>Titular</label>
-            <input type="text" id="acc-name" oninput="upd()">
-        </div>
-        
-        <div class="row">
-            <div class="col">
-                <label>Nº Conta</label>
-                <div class="input-group-fixed">
-                    <div class="fixed-label">IGB-u</div>
-                    <input type="number" id="acc-id" placeholder="1" oninput="upd()">
-                </div>
-            </div>
-            <div class="col">
-                <label>Saldo (Automático)</label>
-                <input type="text" id="acc-balance" readonly style="color:var(--gold); font-weight:bold;">
-            </div>
-        </div>
+    <button class="btn-submit" onclick="generateBidBBCode()">Gerar Template de Lance</button>
 
-        <hr style="border:0; border-top:1px solid #333; margin:20px 0;">
-
-        <label style="color:var(--info);">Débito Automático (Semanal)</label>
-        <div class="auto-pay-box">
-            <div class="form-group">
-                <label style="color:#bbb;">Padrão de Vida (Consumo)</label>
-                <select id="auto-life" onchange="updSettings()">
-                    <option value="0">Miséria (¥ 0)</option>
-                    <option value="10000">Precário (¥ 10.000)</option>
-                    <option value="50000">Básico (¥ 50.000)</option>
-                    <option value="80000">Conforto (¥ 80.000)</option>
-                    <option value="200000">Luxo (¥ 200.000)</option>
-                    <option value="600000">Opulência (¥ 600.000)</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label style="color:#bbb;">Imóvel (Aluguel)</label>
-                <select id="auto-house" onchange="updSettings()">
-                    <option value="0">Sem Teto / Escola (¥ 0)</option>
-                    <option value="20000">Esconderijo (Base: ¥ 20k)</option>
-                    <option value="100000">Apartamento (Base: ¥ 100k)</option>
-                    <option value="400000">Residência (Base: ¥ 400k)</option>
-                    <option value="1000000">Complexo (Base: ¥ 1M)</option>
-                </select>
-                <label class="checkbox-wrapper">
-                    <input type="checkbox" id="auto-owned" onchange="updSettings()">
-                    Sou Proprietário (Paga apenas 10% do valor)
-                </label>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <label style="color:#bbb;">Custo Semanal</label>
-                    <input type="text" id="auto-total" readonly style="color:var(--danger);">
-                </div>
-                <div class="col" style="display:flex; align-items:flex-end;">
-                    <button class="btn btn-auto" onclick="processAutoPay()">Pagar & Add Recibo</button>
-                </div>
-            </div>
-        </div>
-        <hr style="border:0; border-top:1px solid #333; margin:20px 0;">
-
-        <label style="color:var(--success);">Nova Transação (Manual)</label>
-        <div style="background:#111; padding:10px; border-radius:6px; border:1px solid #222;">
-            <div class="row">
-                <div class="col" style="flex:0 0 100px;">
-                    <select id="log-type">
-                        <option value="deposit">Depósito</option>
-                        <option value="withdrawal">Saque</option>
-                    </select>
-                </div>
-                <div class="col">
-                    <input type="text" id="log-amount" placeholder="Valor (Ex: 50000)">
-                </div>
-            </div>
-            <div class="row" style="margin-top:10px;">
-                <div class="col" style="flex:0 0 100px;">
-                     <input type="text" id="log-date" placeholder="Data">
-                </div>
-                <div class="col">
-                     <input type="text" id="log-desc" placeholder="Descrição (Ex: Missão X)">
-                </div>
-            </div>
-            <div style="margin-top:10px;">
-                <input type="text" id="log-link" placeholder="Link do Recibo (URL)">
-            </div>
-            <button class="btn" onclick="addLog()">Adicionar Log</button>
-        </div>
-
-        <div style="margin-top:20px;">
-            <label>Histórico de Logs (Arraste para organizar)</label>
-            <div id="logs-manager-list" class="log-manager-list"></div>
-            <button class="btn btn-outline" style="margin-top:10px; border-color:var(--danger); color:var(--danger);" onclick="askClearLogs()">Limpar Histórico</button>
-        </div>
-      </div>
-
-      <!-- TAB MULTI-RECIBOS -->
-      <div id="tab-receipt" class="hidden">
-        <div style="background:#1a1a1a; padding:15px; border-radius:6px; border:1px solid #333;">
-            <label style="color:var(--gold);">Criar Novo Recibo</label>
-            
-            <label class="checkbox-wrapper" style="margin-bottom:15px; color:var(--success); font-weight:bold;">
-                <input type="checkbox" id="rx-sync" checked>
-                Sincronizar com Extrato Bancário?
-            </label>
-
-            <div class="form-group">
-              <label>Tipo</label>
-              <select id="rx-type">
-                <option value="deposit">Depósito (Entrada)</option>
-                <option value="withdrawal">Saque (Saída)</option>
-                <option value="transfer">Transferência</option>
-              </select>
-            </div>
-            <div class="row">
-                <div class="col"><label>Valor</label><input type="text" id="rx-amount" placeholder="Ex: 5000"></div>
-                <div class="col"><label>Data</label><input type="text" id="rx-date"></div>
-            </div>
-            <div class="row">
-                 <div class="col"><label>De (Nome)</label><input type="text" id="rx-from"></div>
-                 <div class="col"><label>De (Link)</label><input type="text" id="rx-from-link"></div>
-            </div>
-            <div class="row">
-                 <div class="col"><label>Para (Nome)</label><input type="text" id="rx-to"></div>
-                 <div class="col"><label>Para (Link)</label><input type="text" id="rx-to-link"></div>
-            </div>
-            <div class="form-group">
-                 <label>Descrição</label>
-                 <input type="text" id="rx-desc">
-            </div>
-            <button class="btn btn-add" onclick="addReceiptToList()">+ Adicionar à Lista</button>
-        </div>
-
-        <div class="receipt-list-container">
-            <label>Recibos na Lista (Serão gerados juntos)</label>
-            <div id="receipt-manager-list" class="log-manager-list"></div>
-            <button class="btn btn-outline" style="margin-top:10px; border-color:var(--danger); color:var(--danger);" onclick="askClearReceipts()">Limpar Todos</button>
-        </div>
-      </div>
-
-      <!-- TAB LEILÃO -->
-      <div id="tab-auction" class="hidden">
-        <div style="background:#1a1a1a; padding:15px; border-radius:6px; border:1px solid #333;">
-            <label style="color:var(--gold);">Criar Lance / Ação de Leilão</label>
-            
-            <label class="checkbox-wrapper" style="margin-bottom:15px; color:var(--success); font-weight:bold;">
-                <input type="checkbox" id="auc-sync" checked>
-                Sincronizar Débito no Extrato Bancário?
-            </label>
-
-            <div class="form-group">
-              <label>Ação no Leilão</label>
-              <select id="auc-action" onchange="toggleAuctionFields()">
-                <option value="bid">Novo Lance (Inserir Valor)</option>
-                <option value="pass">Passar (Desistir do Lote)</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label>Item / Lote do Leilão</label>
-              <input type="text" id="auc-item" placeholder="Ex: Pergaminho Ancestral / Lote #02">
-            </div>
-
-            <div class="row">
-                <div class="col" id="auc-amount-container">
-                    <label>Valor do Lance (¥)</label>
-                    <input type="text" id="auc-amount" placeholder="Ex: 150000">
-                </div>
-                <div class="col">
-                    <label>Data / Turno</label>
-                    <input type="text" id="auc-date">
-                </div>
-            </div>
-
-            <div class="row">
-                 <div class="col"><label>Licitante (Nome)</label><input type="text" id="auc-user"></div>
-                 <div class="col"><label>Licitante (Link Perfil)</label><input type="text" id="auc-user-link"></div>
-            </div>
-
-            <div class="form-group">
-                 <label>Observação / Declaração</label>
-                 <input type="text" id="auc-note" placeholder="Ex: Cobro a oferta anterior / Fora do meu orçamento">
-            </div>
-
-            <button class="btn btn-add" onclick="addAuctionToList()">+ Adicionar Lance</button>
-        </div>
-
-        <div class="receipt-list-container">
-            <label>Lances Gerados</label>
-            <div id="auction-manager-list" class="log-manager-list"></div>
-            <button class="btn btn-outline" style="margin-top:10px; border-color:var(--danger); color:var(--danger);" onclick="askClearAuctions()">Limpar Todos</button>
-        </div>
-      </div>
-
+    <div class="output-box" id="player-output" style="display:none;">
+      <h4>Código para Postagem no Fórum:</h4>
+      <textarea id="p-code" class="code-result" readonly></textarea>
+      <button class="btn-copy" onclick="copyCode()">📋 Copiar BBCode</button>
     </div>
   </div>
 
-  <div class="preview-pane">
-    <div id="preview-box" style="width:100%; max-width:800px;"></div>
-    
-    <div class="output-controls">
-        <textarea id="output-code" class="output-code" readonly></textarea>
-        <button class="btn" style="width:100px; margin:0;" onclick="copyCode()">COPIAR</button>
+  <!-- ABA 2: SIMULADOR DE NPC (GANÂNCIA E VALOR) -->
+  <div id="npc-tab" class="tab-content">
+    <div class="row">
+      <div class="col form-group">
+        <label>Raridade do Item</label>
+        <select id="npc-rarity">
+          <option value="comum">Comum (CD 10)</option>
+          <option value="destaque">Destaque (CD 5)</option>
+        </select>
+      </div>
+      <div class="col form-group">
+        <label>Lances Já Feitos por NPCs (Máx: 10)</label>
+        <input type="number" id="npc-count" value="0" min="0" max="10">
+      </div>
     </div>
+
+    <div class="form-group">
+      <label>Último Lance Registrado (¥)</label>
+      <input type="number" id="npc-last-bid" placeholder="Ex: 150000">
+    </div>
+
+    <button class="btn-submit" onclick="rollNPCAction()">Calcular Reação dos NPCs</button>
+
+    <div id="npc-output" class="dice-result" style="display:none;"></div>
   </div>
+</div>
 
 <script>
-  // --- UI HELPER FUNCTIONS ---
-  function showToast(message, type = 'info') {
-      const container = document.getElementById('toast-container');
-      const toast = document.createElement('div');
-      toast.className = `toast ${type}`;
-      
-      let icon = 'info';
-      if(type === 'success') icon = 'check_circle';
-      if(type === 'error') icon = 'error';
-      if(type === 'warning') icon = 'warning';
-
-      toast.innerHTML = `<i class="material-icons round">${icon}</i> <span>${message}</span>`;
-      container.appendChild(toast);
-
-      setTimeout(() => {
-          toast.style.animation = 'fadeOut 0.3s forwards';
-          setTimeout(() => toast.remove(), 300);
-      }, 3500);
+  function switchTab(tabId, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    btn.classList.add('active');
   }
 
-  function showConfirmModal(title, message, onConfirm) {
-      const overlay = document.createElement('div');
-      overlay.className = 'modal-overlay';
-      overlay.innerHTML = `
-          <div class="modal-box">
-              <div class="modal-title">${title}</div>
-              <div class="modal-msg">${message}</div>
-              <div class="modal-actions">
-                  <button class="btn-modal btn-cancel" id="modal-cancel">Cancelar</button>
-                  <button class="btn-modal btn-confirm" id="modal-confirm">Confirmar</button>
-              </div>
-          </div>
-      `;
-      document.body.appendChild(overlay);
-
-      document.getElementById('modal-cancel').onclick = () => overlay.remove();
-      document.getElementById('modal-confirm').onclick = () => {
-          onConfirm();
-          overlay.remove();
-      };
-  }
-
-  // --- ESTADO GLOBAL ---
-  let currentTab = 'account';
-  let accountData = {
-      name: "",
-      id: "",
-      balance: 0,
-      logs: [],
-      settings: { life: 0, house: 0, owned: false }
-  };
-  
-  let receiptList = [];
-  let auctionList = [];
-
-  // --- PERSISTÊNCIA ---
-  function saveLocal() {
-      localStorage.setItem('igb_data_v3', JSON.stringify(accountData));
-  }
-
-  function loadLocal() {
-      const data = localStorage.getItem('igb_data_v3');
-      if (data) {
-          try {
-              const parsed = JSON.parse(data);
-              accountData = parsed;
-              
-              document.getElementById('acc-name').value = accountData.name || '';
-              document.getElementById('acc-id').value = accountData.id || '';
-              
-              document.getElementById('auto-life').value = accountData.settings.life || 0;
-              document.getElementById('auto-house').value = accountData.settings.house || 0;
-              document.getElementById('auto-owned').checked = accountData.settings.owned || false;
-
-              // Preencher nome padrão de licitante com nome da conta
-              if(accountData.name) {
-                  document.getElementById('auc-user').value = accountData.name;
-                  document.getElementById('rx-from').value = accountData.name;
-              }
-
-              upd();
-              updSettings();
-          } catch(e) { console.error("Erro ao carregar save", e); }
-      }
-  }
-
-  function askClearData() {
-      showConfirmModal(
-          "Resetar Ferramenta?",
-          "Isso apagará TODAS as informações. Deseja continuar?",
-          () => {
-              localStorage.removeItem('igb_data_v3');
-              location.reload();
-          }
-      );
-  }
-
-  // --- INICIALIZAÇÃO ---
-  const today = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit' });
-  document.getElementById('log-date').value = today;
-  document.getElementById('rx-date').value = new Date().toLocaleDateString('pt-BR');
-  document.getElementById('auc-date').value = new Date().toLocaleDateString('pt-BR');
-  
-  loadLocal();
-
-  // --- NAVEGAÇÃO ---
-  function setTab(tab) {
-      currentTab = tab;
-      document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
-      document.getElementById('tab-account').classList.add('hidden');
-      document.getElementById('tab-receipt').classList.add('hidden');
-      document.getElementById('tab-auction').classList.add('hidden');
-
-      if(tab === 'account') {
-          document.querySelector('.tab:nth-child(1)').classList.add('active');
-          document.getElementById('tab-account').classList.remove('hidden');
-          renderAccountPreview();
-      } else if(tab === 'receipt') {
-          document.querySelector('.tab:nth-child(2)').classList.add('active');
-          document.getElementById('tab-receipt').classList.remove('hidden');
-          renderReceiptPreview();
-      } else if(tab === 'auction') {
-          document.querySelector('.tab:nth-child(3)').classList.add('active');
-          document.getElementById('tab-auction').classList.remove('hidden');
-          renderAuctionPreview();
-      }
-  }
-
-  // --- AUTO PAY ---
-  function updSettings() {
-      accountData.settings.life = parseInt(document.getElementById('auto-life').value) || 0;
-      accountData.settings.house = parseInt(document.getElementById('auto-house').value) || 0;
-      accountData.settings.owned = document.getElementById('auto-owned').checked;
-
-      let houseCost = accountData.settings.house;
-      if (accountData.settings.owned) houseCost = houseCost * 0.10;
-      
-      const total = accountData.settings.life + houseCost;
-      document.getElementById('auto-total').value = "¥ " + total.toLocaleString('en-US');
-      
-      saveLocal(); 
-  }
-
-  function processAutoPay() {
-      let houseCost = accountData.settings.house;
-      let descHouse = "Aluguel";
-      
-      if (accountData.settings.owned) {
-          houseCost = houseCost * 0.10;
-          descHouse = "Manutenção";
-      }
-
-      const total = accountData.settings.life + houseCost;
-      if (total <= 0) {
-          showToast("Nada para pagar com a configuração atual.", "warning");
-          return;
-      }
-
-      const descFull = `Débito Semanal: Vida + ${descHouse}`;
-      const newLog = {
-        type: 'withdrawal',
-        amount: total,
-        date: document.getElementById('log-date').value,
-        desc: descFull,
-        link: '#' 
-      };
-      accountData.logs.unshift(newLog);
-      
-      const autoReceipt = {
-          type: 'withdrawal',
-          amount: "¥ " + total.toLocaleString('en-US'),
-          date: document.getElementById('log-date').value,
-          from: accountData.name,
-          fromLink: '#',
-          to: "Sistema (Moradia e CdV)",
-          toLink: '#',
-          desc: descFull
-      };
-      
-      receiptList.push(autoReceipt);
-
-      upd(); 
-      setTab('receipt'); 
-      renderReceiptList(); 
-      showToast("Pagamento Registrado com Sucesso!", "success");
-  }
-
-  // --- MULTI-RECIBOS LOGIC ---
-  function addReceiptToList() {
-      const newItem = {
-          type: document.getElementById('rx-type').value,
-          amount: document.getElementById('rx-amount').value,
-          date: document.getElementById('rx-date').value,
-          from: document.getElementById('rx-from').value,
-          fromLink: document.getElementById('rx-from-link').value || '#',
-          to: document.getElementById('rx-to').value,
-          toLink: document.getElementById('rx-to-link').value || '#',
-          desc: document.getElementById('rx-desc').value
-      };
-
-      if(!newItem.amount) {
-          showToast("Preencha ao menos o valor.", "error");
-          return;
-      }
-      
-      const shouldSync = document.getElementById('rx-sync').checked;
-      
-      if(shouldSync) {
-          let cleanValStr = newItem.amount.replace(/[^0-9.-]+/g,"");
-          let cleanVal = parseFloat(cleanValStr);
-          
-          if(isNaN(cleanVal)) {
-              showToast("Aviso: Valor numérico não identificado. Sincronia pulada.", "warning");
-          } else {
-              let bankType = 'deposit';
-              if(newItem.type === 'withdrawal' || newItem.type === 'transfer') {
-                  bankType = 'withdrawal';
-              }
-              
-              let syncLink = '#';
-              if(newItem.type === 'deposit') syncLink = newItem.fromLink;
-              else syncLink = newItem.toLink;
-
-              const newLog = {
-                  type: bankType,
-                  amount: cleanVal,
-                  date: newItem.date,
-                  desc: newItem.desc || (newItem.type === 'transfer' ? 'Transferência' : 'Transação'),
-                  link: syncLink
-              };
-              accountData.logs.unshift(newLog);
-              saveLocal(); 
-              showToast("Transação sincronizada com o banco!", "success");
-          }
-      } else {
-          showToast("Recibo adicionado (Sem sincronia)", "info");
-      }
-
-      receiptList.push(newItem);
-      renderReceiptList();
-      renderReceiptPreview();
-  }
-
-  function removeReceipt(index) {
-      receiptList.splice(index, 1);
-      renderReceiptList();
-      renderReceiptPreview();
-  }
-
-  function askClearReceipts() {
-      if(receiptList.length === 0) return;
-      showConfirmModal("Limpar Lista?", "Deseja remover todos os recibos?", () => {
-          clearReceiptList();
-      });
-  }
-
-  function clearReceiptList() {
-      receiptList = [];
-      renderReceiptList();
-      renderReceiptPreview();
-  }
-
-  function renderReceiptList() {
-    const container = document.getElementById('receipt-manager-list');
-    container.innerHTML = '';
-    
-    receiptList.forEach((rx, idx) => {
-        const div = document.createElement('div');
-        div.className = `log-item-edit ${rx.type}`;
-        div.innerHTML = `
-            <div class="log-info">
-                <span class="log-desc">${rx.desc || 'Sem Descrição'}</span>
-                <span class="log-date">${rx.date} | ${rx.amount}</span>
-            </div>
-            <i class="material-icons round btn-del" onclick="removeReceipt(${idx})">close</i>
-        `;
-        container.appendChild(div);
-    });
-  }
-
-  function renderReceiptPreview() {
-      if(receiptList.length === 0) {
-          document.getElementById('preview-box').innerHTML = '<div style="color:#666; text-align:center; padding:20px;">Nenhum recibo na lista.</div>';
-          document.getElementById('output-code').value = '';
-          return;
-      }
-
-      let finalHTML = `<link href="https://gaaaaaaaaabs.github.io/goldenagerepositor.io/transacao.css" rel="stylesheet" type="text/css">`;
-      
-      receiptList.forEach(rx => {
-          let icon = '↑';
-          let title = 'Notificação de Depósito';
-          if (rx.type === 'withdrawal') { icon = '↓'; title = 'Notificação de Saque'; }
-          if (rx.type === 'transfer') { icon = '→'; title = 'Notificação de Transferência'; }
-
-          const block = `<div class="tx-container ${rx.type}"><div class="tx-header"><div class="tx-icon">${icon}</div><h2 class="tx-title">${title}</h2></div><div class="tx-body"><div class="tx-amount">${rx.amount}</div><ul class="tx-details"><li><span class="label">De:</span><span class="value"><a href="${rx.fromLink}" target="_blank">${rx.from}</a></span></li><li><span class="label">Para:</span><span class="value"><a href="${rx.toLink}" target="_blank">${rx.to}</a></span></li><li><span class="label">Data:</span><span class="value">${rx.date}</span></li><li><span class="label">Descrição:</span><span class="value">${rx.desc}</span></li></ul></div></div><br>`;
-          finalHTML += block;
-      });
-
-      document.getElementById('preview-box').innerHTML = finalHTML;
-      document.getElementById('output-code').value = finalHTML.replace(/(\r\n|\n|\r)/gm, "").replace(/>\s+</g, '><');
-  }
-
-  // --- LEILÃO LOGIC (NOVO) ---
-  function toggleAuctionFields() {
-      const action = document.getElementById('auc-action').value;
-      const amountContainer = document.getElementById('auc-amount-container');
-      if (action === 'pass') {
-          amountContainer.style.opacity = '0.4';
-          document.getElementById('auc-amount').disabled = true;
-          document.getElementById('auc-amount').value = '';
-      } else {
-          amountContainer.style.opacity = '1';
-          document.getElementById('auc-amount').disabled = false;
-      }
-  }
-
-  function addAuctionToList() {
-      const action = document.getElementById('auc-action').value;
-      const rawAmount = document.getElementById('auc-amount').value;
-      const item = document.getElementById('auc-item').value || 'Lote de Leilão';
-      const user = document.getElementById('auc-user').value || accountData.name || 'Anônimo';
-      const userLink = document.getElementById('auc-user-link').value || '#';
-      const date = document.getElementById('auc-date').value;
-      const note = document.getElementById('auc-note').value;
-
-      let displayAmount = '';
-      let cleanVal = 0;
-
-      if (action === 'bid') {
-          if (!rawAmount) {
-              showToast("Insira o valor do novo lance.", "error");
-              return;
-          }
-          let cleanValStr = rawAmount.replace(/[^0-9.-]+/g, "");
-          cleanVal = parseFloat(cleanValStr);
-          displayAmount = !isNaN(cleanVal) ? "¥ " + cleanVal.toLocaleString('en-US') : rawAmount;
-      } else {
-          displayAmount = "PASSOU (DESISTIU)";
-      }
-
-      const newItem = {
-          action: action,
-          item: item,
-          amount: displayAmount,
-          numAmount: cleanVal,
-          user: user,
-          userLink: userLink,
-          date: date,
-          note: note
-      };
-
-      const shouldSync = document.getElementById('auc-sync').checked;
-      if (shouldSync && action === 'bid' && cleanVal > 0) {
-          const newLog = {
-              type: 'withdrawal',
-              amount: cleanVal,
-              date: date,
-              desc: `Lance no Leilão: ${item}`,
-              link: userLink
-          };
-          accountData.logs.unshift(newLog);
-          saveLocal();
-          showToast("Débito do lance registrado no extrato bancário!", "success");
-      }
-
-      auctionList.push(newItem);
-      renderAuctionList();
-      renderAuctionPreview();
-      showToast(action === 'bid' ? "Novo lance adicionado!" : "Desistência registrada!", "success");
-  }
-
-  function removeAuctionItem(index) {
-      auctionList.splice(index, 1);
-      renderAuctionList();
-      renderAuctionPreview();
-  }
-
-  function askClearAuctions() {
-      if (auctionList.length === 0) return;
-      showConfirmModal("Limpar Lances?", "Deseja remover todos os registros de leilão?", () => {
-          auctionList = [];
-          renderAuctionList();
-          renderAuctionPreview();
-          showToast("Histórico de leilão limpo.", "info");
-      });
-  }
-
-  function renderAuctionList() {
-      const container = document.getElementById('auction-manager-list');
-      container.innerHTML = '';
-
-      auctionList.forEach((auc, idx) => {
-          const div = document.createElement('div');
-          div.className = `log-item-edit ${auc.action}`;
-          div.innerHTML = `
-              <div class="log-info">
-                  <span class="log-desc">[${auc.action === 'bid' ? 'LANCE' : 'PASSOU'}] ${auc.item}</span>
-                  <span class="log-date">${auc.user} | ${auc.amount}</span>
-              </div>
-              <i class="material-icons round btn-del" onclick="removeAuctionItem(${idx})">close</i>
-          `;
-          container.appendChild(div);
-      });
-  }
-
-  function renderAuctionPreview() {
-      if (auctionList.length === 0) {
-          document.getElementById('preview-box').innerHTML = '<div style="color:#666; text-align:center; padding:20px;">Nenhum lance no histórico de leilão.</div>';
-          document.getElementById('output-code').value = '';
-          return;
-      }
-
-      let finalHTML = `<style>.auc-card{background:#0e0e0e;border:1px solid #d4af37;border-radius:6px;padding:15px;margin-bottom:15px;font-family:'Lato',sans-serif;color:#e0e0e0;box-shadow:0 4px 15px rgba(0,0,0,0.6);max-width:600px;margin-left:auto;margin-right:auto;}.auc-card.pass{border-color:#e74c3c;}.auc-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #222;padding-bottom:8px;margin-bottom:12px;}.auc-title{font-family:'Cinzel',serif;color:#d4af37;font-size:1.1em;margin:0;}.auc-card.pass .auc-title{color:#e74c3c;}.auc-badge{font-size:0.7em;font-weight:bold;padding:3px 8px;border-radius:3px;text-transform:uppercase;letter-spacing:1px;}.badge-bid{background:#2ecc71;color:#000;}.badge-pass{background:#e74c3c;color:#fff;}.auc-amount{font-size:1.5em;font-family:'Roboto Mono',monospace;font-weight:bold;color:#d4af37;text-align:center;margin:12px 0;background:#050505;padding:8px;border-radius:4px;border:1px solid #1f1f1f;}.auc-amount.pass-text{color:#e74c3c;}.auc-details{list-style:none;padding:0;margin:0;font-size:0.85em;}.auc-details li{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dashed #1a1a1a;}.auc-details .label{color:#888;}.auc-details .value a{color:#d4af37;text-decoration:none;}.auc-note{margin-top:10px;padding:8px 12px;background:#050505;border-left:3px solid #d4af37;font-style:italic;font-size:0.85em;color:#bbb;}.auc-card.pass .auc-note{border-left-color:#e74c3c;}</style>`;
-
-      auctionList.forEach(auc => {
-          const isPass = auc.action === 'pass';
-          const cardClass = isPass ? 'auc-card pass' : 'auc-card';
-          const badgeClass = isPass ? 'auc-badge badge-pass' : 'auc-badge badge-bid';
-          const badgeText = isPass ? 'PASSOU / DESISTIU' : 'LANCE REGISTRADO';
-          const amountClass = isPass ? 'auc-amount pass-text' : 'auc-amount';
-
-          let noteBlock = '';
-          if (auc.note) {
-              noteBlock = `<div class="auc-note">"${auc.note}"</div>`;
-          }
-
-          const block = `<div class="${cardClass}"><div class="auc-header"><h3 class="auc-title">${auc.item}</h3><span class="${badgeClass}">${badgeText}</span></div><div class="${amountClass}">${auc.amount}</div><ul class="auc-details"><li><span class="label">Licitante:</span><span class="value"><a href="${auc.userLink}" target="_blank">${auc.user}</a></span></li><li><span class="label">Data / Turno:</span><span class="value">${auc.date}</span></li></ul>${noteBlock}</div>`;
-          finalHTML += block;
-      });
-
-      document.getElementById('preview-box').innerHTML = finalHTML;
-      document.getElementById('output-code').value = finalHTML.replace(/(\r\n|\n|\r)/gm, "").replace(/>\s+</g, '><');
-  }
-
-  // --- LÓGICA DA CONTA ---
-  function importData() {
-    const html = document.getElementById('import-html').value;
-    if(!html) {
-        showToast("Cole o HTML primeiro.", "error");
-        return;
+  function updateMinBid() {
+    const type = document.getElementById('p-type').value;
+    const bidInput = document.getElementById('p-bid');
+    if (type === 'comum') {
+      bidInput.min = 50000;
+      if (!bidInput.value || Number(bidInput.value) < 50000) bidInput.value = 50000;
+    } else {
+      bidInput.min = 1000000;
+      if (!bidInput.value || Number(bidInput.value) < 1000000) bidInput.value = 1000000;
     }
-    
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    
-    const nameEl = doc.querySelector('.header-item:nth-child(1) .header-value');
-    const idEl = doc.querySelector('.header-item:nth-child(2) .header-value');
-    
-    if(nameEl) {
-        document.getElementById('acc-name').value = nameEl.textContent.trim();
-        document.getElementById('auc-user').value = nameEl.textContent.trim();
-        document.getElementById('rx-from').value = nameEl.textContent.trim();
-    }
-    if(idEl) document.getElementById('acc-id').value = idEl.textContent.replace('IGB-u', '').trim();
-    
-    const container = doc.querySelector('.bank-container');
-    if (container) {
-        const savedLife = container.getAttribute('data-setting-life');
-        const savedHouse = container.getAttribute('data-setting-house');
-        const savedOwned = container.getAttribute('data-setting-owned');
-        if (savedLife !== null) document.getElementById('auto-life').value = savedLife;
-        if (savedHouse !== null) document.getElementById('auto-house').value = savedHouse;
-        if (savedOwned !== null) document.getElementById('auto-owned').checked = (savedOwned === 'true');
-    }
-
-    accountData.logs = [];
-    const logItems = doc.querySelectorAll('.transaction-item');
-    logItems.forEach(li => {
-        const type = li.classList.contains('withdrawal') ? 'withdrawal' : 'deposit';
-        const date = li.querySelector('.date')?.textContent || '';
-        const linkEl = li.querySelector('.desc a');
-        const desc = linkEl ? linkEl.textContent : (li.querySelector('.desc')?.textContent || '');
-        const link = linkEl ? linkEl.href : '#';
-        const amountStr = li.querySelector('.amount')?.textContent || '0';
-        const amount = parseFloat(amountStr.replace(/,/g, '')) || 0;
-        accountData.logs.push({ type, date, desc, link, amount });
-    });
-    
-    upd();
-    updSettings();
-    showToast("Backup restaurado com sucesso!", "success");
   }
 
-  function addLog() {
-    const type = document.getElementById('log-type').value;
-    const amountStr = document.getElementById('log-amount').value;
-    const amount = parseFloat(amountStr.replace(/,/g, '')) || 0;
-    
-    if(amount <= 0) {
-        showToast("Valor inválido.", "error");
-        return;
-    }
-    
-    const newLog = {
-        type: type,
-        amount: amount,
-        date: document.getElementById('log-date').value,
-        desc: document.getElementById('log-desc').value || 'Transação',
-        link: document.getElementById('log-link').value || '#'
-    };
-    
-    accountData.logs.unshift(newLog);
-    
-    document.getElementById('log-amount').value = '';
-    document.getElementById('log-desc').value = '';
-    document.getElementById('log-link').value = '';
-    
-    upd();
-    showToast("Log adicionado.", "success");
-  }
+  function generateBidBBCode() {
+    const item = document.getElementById('p-item').value.trim() || 'Item em Leilão';
+    const bid = Number(document.getElementById('p-bid').value || 0).toLocaleString('pt-BR');
+    const source = document.getElementById('p-source').value;
+    const link = document.getElementById('p-link').value.trim() || '#';
 
-  function askRemoveLog(index) {
-      showConfirmModal("Remover Log?", "Deseja apagar este registro do histórico?", () => {
-          accountData.logs.splice(index, 1);
-          upd();
-          showToast("Log removido.", "info");
-      });
-  }
+    const bbcode = `[b]Item Desejado:[/b] ${item}\n[b]Valor do Lance:[/b] ¥ ${bid}\n[b]Origem dos Recurso:[/b] ${source}\n[b]Link do Banco/Ficha:[/b] ${link}`;
 
-  function askClearLogs() {
-      if(accountData.logs.length === 0) return;
-      showConfirmModal("Limpar Histórico?", "Deseja apagar TODOS os logs da conta?", () => {
-          accountData.logs = [];
-          upd();
-          showToast("Histórico limpo.", "success");
-      });
-  }
-
-  function calculateBalance() {
-    let bal = 0;
-    accountData.logs.forEach(log => {
-        if(log.type === 'deposit') bal += log.amount;
-        else bal -= log.amount;
-    });
-    return bal;
-  }
-
-  // --- DRAG AND DROP LOGIC ---
-  let dragSrcEl = null;
-
-  function handleDragStart(e) {
-      dragSrcEl = this;
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/html', this.innerHTML);
-      this.classList.add('dragging');
-  }
-
-  function handleDragOver(e) {
-      if (e.preventDefault) {
-          e.preventDefault();
-      }
-      e.dataTransfer.dropEffect = 'move';
-      return false;
-  }
-
-  function handleDragEnter(e) {
-      this.classList.add('over');
-  }
-
-  function handleDragLeave(e) {
-      this.classList.remove('over');
-  }
-
-  function handleDrop(e) {
-      if (e.stopPropagation) {
-          e.stopPropagation();
-      }
-      
-      if (dragSrcEl !== this) {
-          const items = Array.from(document.querySelectorAll('#logs-manager-list .log-item-edit'));
-          const srcIdx = items.indexOf(dragSrcEl);
-          const targetIdx = items.indexOf(this);
-          
-          if(srcIdx > -1 && targetIdx > -1) {
-              const item = accountData.logs.splice(srcIdx, 1)[0];
-              accountData.logs.splice(targetIdx, 0, item);
-              upd();
-          }
-      }
-      return false;
-  }
-
-  function handleDragEnd(e) {
-      this.classList.remove('dragging');
-      let items = document.querySelectorAll('#logs-manager-list .log-item-edit');
-      items.forEach(function (item) {
-          item.classList.remove('over');
-      });
-  }
-
-  function renderLogList() {
-    const container = document.getElementById('logs-manager-list');
-    container.innerHTML = '';
-    
-    accountData.logs.forEach((log, idx) => {
-        const div = document.createElement('div');
-        div.className = `log-item-edit ${log.type}`;
-        div.setAttribute('draggable', 'true');
-        
-        div.addEventListener('dragstart', handleDragStart, false);
-        div.addEventListener('dragenter', handleDragEnter, false);
-        div.addEventListener('dragover', handleDragOver, false);
-        div.addEventListener('dragleave', handleDragLeave, false);
-        div.addEventListener('drop', handleDrop, false);
-        div.addEventListener('dragend', handleDragEnd, false);
-
-        div.innerHTML = `
-            <div class="log-left-group">
-                <i class="material-icons drag-handle">drag_handle</i>
-                <div class="log-info">
-                    <span class="log-desc">${log.desc}</span>
-                    <span class="log-date">${log.date} | ${log.type === 'withdrawal' ? '-' : '+'} ${log.amount.toLocaleString('en-US')}</span>
-                </div>
-            </div>
-            <i class="material-icons round btn-del" onclick="askRemoveLog(${idx})" title="Apagar item">close</i>
-        `;
-        container.appendChild(div);
-    });
-  }
-
-  function upd() {
-    accountData.name = document.getElementById('acc-name').value;
-    accountData.id = document.getElementById('acc-id').value;
-    renderLogList();
-    if(currentTab === 'account') renderAccountPreview();
-    saveLocal(); 
-  }
-
-  function renderAccountPreview() {
-    const bal = calculateBalance();
-    const balFormatted = bal.toLocaleString('en-US');
-    document.getElementById('acc-balance').value = balFormatted;
-    
-    let logsHTML = '';
-    accountData.logs.forEach(log => {
-        const valFormatted = log.amount.toLocaleString('en-US');
-        logsHTML += `<li class="transaction-item ${log.type}"><span class="date">${log.date}</span><span class="desc"><a href="${log.link}" target="_blank">${log.desc}</a></span><span class="amount">${valFormatted}</span></li>`;
-    });
-
-    const html = `<link href="https://gaaaaaaaaabs.github.io/goldenagerepositor.io/banco.css" rel="stylesheet" type="text/css"><div class="bank-container" data-setting-life="${accountData.settings.life}" data-setting-house="${accountData.settings.house}" data-setting-owned="${accountData.settings.owned}"><div class="bank-brand">International Golden Bank</div><div class="bank-header"><div class="header-item"><span class="header-label">Titular da Conta</span><span class="header-value">${accountData.name}</span></div><div class="header-item"><span class="header-label">Nº da Conta</span><span class="header-value">IGB-u${accountData.id}</span></div></div><div class="bank-body"><div class="balance-card"><span class="balance-label">Saldo Atual (¥)</span><span class="balance-amount">${balFormatted}</span></div><div class="transaction-log"><h2>Log de Transações</h2><div class="log-helper"><input type="checkbox" id="log-helper-1" class="log-helper-toggle-input"><label for="log-helper-1" class="log-helper-toggle"></label><div class="log-helper-content"><textarea readonly><li class="transaction-item deposit"><span class="date">DD/MM/AA</span><span class="desc"><a href="#" target="_blank">Descrição</a></span><span class="amount">0</span></li></textarea></div></div><div class="transaction-header"><span class="header-col-1">Data</span><span class="header-col-2">Descrição</span><span class="header-col-3">Valor</span></div><ul class="transaction-list">${logsHTML}</ul></div></div></div>`;
-    
-    document.getElementById('preview-box').innerHTML = html;
-    document.getElementById('output-code').value = html.replace(/(\r\n|\n|\r)/gm, "").replace(/>\s+</g, '><');
+    document.getElementById('p-code').value = bbcode;
+    document.getElementById('player-output').style.display = 'block';
   }
 
   function copyCode() {
-    document.getElementById('output-code').select();
+    const codeArea = document.getElementById('p-code');
+    codeArea.select();
     document.execCommand('copy');
-    showToast("Código Copiado!", "success");
+    alert('Template de lance copiado!');
   }
 
+  function rollNPCAction() {
+    const rarity = document.getElementById('npc-rarity').value;
+    const count = parseInt(document.getElementById('npc-count').value) || 0;
+    const lastBid = parseFloat(document.getElementById('npc-last-bid').value) || 0;
+    const output = document.getElementById('npc-output');
+
+    if (count >= 10) {
+      output.innerHTML = `<p class="highlight">⚠️ Limite Alcancado:</p><p>Os NPCs já realizaram 10 lances neste item e encerraram as disputas.</p>`;
+      output.style.display = 'block';
+      return;
+    }
+
+    if (lastBid <= 0) {
+      alert('Informe o valor do último lance antes de rolar.');
+      return;
+    }
+
+    const cd = rarity === 'comum' ? 10 : 5;
+    const d20 = Math.floor(Math.random() * 20) + 1;
+    const success = d20 >= cd;
+
+    let html = `<p><b>Dado de Ganância (1d20):</b> Rolou <span class="highlight-gold">${d20}</span> (CD: ${cd})</p>`;
+
+    if (success) {
+      const d4 = Math.floor(Math.random() * 4) + 1;
+      const percentages = { 1: 0.10, 2: 0.20, 3: 0.30, 4: 0.50 };
+      const percentText = { 1: '10%', 2: '20%', 3: '30%', 4: '50%' };
+      
+      const increase = lastBid * percentages[d4];
+      const newBid = lastBid + increase;
+
+      html += `<p class="highlight">⚡ UM NPC COBRIU O LANCE!</p>`;
+      html += `<p><b>Dado de Valor (1d4):</b> Rolou <span class="highlight-gold">${d4}</span> (+${percentText[d4]})</p>`;
+      html += `<p><b>Aumento Aplicado:</b> +¥ ${increase.toLocaleString('pt-BR')}</p>`;
+      html += `<p><b>Novo Lance do NPC:</b> <span class="highlight-gold">¥ ${newBid.toLocaleString('pt-BR')}</span></p>`;
+      html += `<p style="font-size: 0.8rem; color: #a0a0b0; margin-top: 10px;">Lances efetuados por NPCs neste item: ${count + 1}/10</p>`;
+    } else {
+      html += `<p style="color: #ff4444; margin-top: 5px;">❌ Nenhum NPC cobriu a oferta. O lance atual do jogador se mantém na liderança.</p>`;
+    }
+
+    output.innerHTML = html;
+    output.style.display = 'block';
+  }
+
+  updateMinBid();
 </script>
+
 </body>
 </html>
