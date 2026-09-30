@@ -9,10 +9,10 @@
       --bg-dark: #0a0a0c;
       --card-bg: #121216;
       --border-color: #2a2a35;
-      --accent-pink: #ff0055;
-      --accent-hover: #ff3377;
-      --text-main: #e1e1e6;
-      --text-muted: #a0a0b0;
+      --accent-blue: #30a9ff;
+      --accent-hover: #1b8adb;
+      --text-main: #e7e9ff;
+      --text-muted: #bfc6e6;
     }
 
     * {
@@ -55,7 +55,7 @@
     }
 
     .tool-header p {
-      color: var(--accent-pink);
+      color: var(--accent-blue);
       font-size: 0.85rem;
       letter-spacing: 1px;
       margin-top: 5px;
@@ -80,7 +80,7 @@
     input {
       width: 100%;
       padding: 12px;
-      background: #08080a;
+      background: #13141c;
       border: 1px solid var(--border-color);
       border-radius: 4px;
       color: #fff;
@@ -90,7 +90,7 @@
     }
 
     input:focus {
-      border-color: var(--accent-pink);
+      border-color: var(--accent-blue);
     }
 
     .row {
@@ -105,7 +105,7 @@
     .btn-submit {
       width: 100%;
       padding: 14px;
-      background: linear-gradient(135deg, var(--accent-pink), #990033);
+      background: linear-gradient(135deg, var(--accent-blue), #185a8a);
       border: 1px solid var(--accent-hover);
       color: #fff;
       font-weight: bold;
@@ -119,15 +119,15 @@
     }
 
     .btn-submit:hover {
-      box-shadow: 0 0 15px rgba(255, 0, 85, 0.6);
+      box-shadow: 0 0 15px rgba(48, 169, 255, 0.4);
       transform: translateY(-1px);
     }
 
     .output-box {
       margin-top: 25px;
-      background: #08080a;
+      background: #13141c;
       border: 1px solid var(--border-color);
-      border-left: 4px solid var(--accent-pink);
+      border-left: 4px solid var(--accent-blue);
       padding: 15px;
       border-radius: 4px;
     }
@@ -141,11 +141,11 @@
 
     textarea.code-result {
       width: 100%;
-      height: 120px;
+      height: 220px;
       font-family: monospace;
       font-size: 0.85rem;
       color: #7dd3fc;
-      background: #08080a;
+      background: #0a0a0c;
       border: 1px solid var(--border-color);
       padding: 10px;
       resize: none;
@@ -200,12 +200,12 @@
     </div>
   </div>
 
-  <button class="btn-submit" onclick="generateBidBBCode()">Gerar Código de Lance</button>
+  <button class="btn-submit" onclick="generateBidBBCode()">Gerar Ticket de Lance</button>
 
   <div class="output-box" id="player-output" style="display:none;">
-    <h4>Código para o Fórum:</h4>
+    <h4>Código HTML para o Fórum:</h4>
     <textarea id="p-code" class="code-result" readonly></textarea>
-    <button class="btn-copy" onclick="copyCode()">📋 Copiar BBCode</button>
+    <button class="btn-copy" onclick="copyCode()">📋 Copiar Código</button>
   </div>
 </div>
 
@@ -216,12 +216,23 @@
     const bid = Number(document.getElementById('p-bid').value || 0).toLocaleString('pt-BR');
     const link = document.getElementById('p-link').value.trim() || '#';
 
-    const bbcode = `[b]Personagem:[/b] ${name}
-[b]Item Desejado:[/b] ${item}
-[b]Valor do Lance:[/b] ¥ ${bid}
-[b]Link do Banco/Ficha:[/b] ${link}`;
+    // Gera o HTML no formato de ticket bancário (usando a classe .transfer para ficar azul neutro, ou pode ser alterado para .withdrawal)
+    const forumCode = `<link href="https://gaaaaaaaaabs.github.io/goldenagerepositor.io/transacao.css" rel="stylesheet" type="text/css">
+<div class="tx-container transfer">
+  <div class="tx-header">
+    <div class="tx-icon">🔨</div>
+    <h2 class="tx-title">Novo Lance</h2>
+  </div>
+  <div class="tx-body">
+    <div class="tx-amount">${bid}</div>
+    <ul class="tx-details">
+      <li><span class="label">De:</span><span class="value"><a href="${link}" target="_blank">${name}</a></span></li>
+      <li><span class="label">Item:</span><span class="value">${item}</span></li>
+    </ul>
+  </div>
+</div><br>`;
 
-    document.getElementById('p-code').value = bbcode;
+    document.getElementById('p-code').value = forumCode;
     document.getElementById('player-output').style.display = 'block';
   }
 
